@@ -1,0 +1,112 @@
+FUNCTION_BLOCK
+
+VAR_INPUT
+poziom_natezenia_swiatla_lampy : REAL;
+poziom_natezenia_swiatla_wokol : REAL;
+poziom_baterii : REAL;
+END_VAR
+VAR_OUTPUT
+zmiana_natezenia_swiatla_lampy : REAL;
+END_VAR
+
+FUZZIFY poziom_natezenia_swiatla_lampy
+TERM slaby := (0, 1) (10, 1) (20, 0.66) (30, 0.33) (40, 0);
+TERM sredni := (20, 0) (30, 0.5) (40, 1) (50, 1) (60, 1) (70, 0.5) (80, 0);
+TERM duzy := (60, 0) (70, 0.33) (80, 0.66) (90, 1) (100, 1);
+
+END_FUZZIFY
+
+FUZZIFY poziom_natezenia_swiatla_wokol
+TERM slaby := (0, 1) (10, 1) (20, 0.66) (30, 0.33) (40, 0);
+TERM sredni := (20, 0) (30, 0.5) (40, 1) (50, 1) (60, 1) (70, 0.5) (80, 0);
+TERM duzy := (60, 0) (70, 0.33) (80, 0.66) (90, 1) (100, 1);
+END_FUZZIFY
+
+FUZZIFY poziom_baterii
+TERM bardzo_niski := (0, 1) (10, 1) (20, 0) (30, 0);
+TERM niski := (0, 0) (10, 0) (20, 1) (30, 1) (40, 0);
+TERM sredni := (20, 0) (30, 0) (40, 1) (50, 1) (60, 1) (70, 0) (80, 0);
+TERM wysoki := (60, 0) (70, 1) (80, 1) (90, 0);
+TERM bardzo_wysoki := (70, 0) (80, 0) (90, 1) (100, 1);
+END_FUZZIFY
+
+
+DEFUZZIFY zmiana_natezenia_swiatla_lampy
+TERM przygas := (0, 1) (1, 1) (2, 0.5) (3, 0);
+TERM zostaw := (2, 0) (3, 0.5) (4, 1) (5, 1) (6, 1) (7, 0.5) (8, 0);
+TERM rozjasnij := (7, 0) (8, 0.5) (9, 1) (10, 1);
+METHOD : COG;
+DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK first
+AND: MIN;
+ACT: MIN;
+
+RULE 0: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS rozjasnij;
+RULE 1: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS rozjasnij;
+RULE 2: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+
+RULE 3: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS rozjasnij;
+RULE 4: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS rozjasnij;
+RULE 5: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+
+RULE 6: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS rozjasnij;
+RULE 7: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 8: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+
+RULE 9: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS rozjasnij;
+RULE 10: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 11: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+
+RULE 12: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 13: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 14: IF poziom_natezenia_swiatla_lampy IS slaby AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+
+RULE 15: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS rozjasnij;
+RULE 16: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 17: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 18: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS rozjasnij;
+RULE 19: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 20: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 21: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 22: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 23: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 24: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 25: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 26: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 27: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 28: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 29: IF poziom_natezenia_swiatla_lampy IS sredni AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 30: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 31: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 32: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS bardzo_wysoki THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 33: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 34: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 35: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS wysoki THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 36: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS zostaw;
+RULE 37: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 38: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS sredni THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 39: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 40: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 41: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+RULE 42: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS slaby AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 43: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS sredni AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+RULE 44: IF poziom_natezenia_swiatla_lampy IS duzy AND poziom_natezenia_swiatla_wokol IS duzy AND poziom_baterii IS bardzo_niski THEN zmiana_natezenia_swiatla_lampy IS przygas;
+
+
+
+
+
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
